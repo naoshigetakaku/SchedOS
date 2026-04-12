@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Sched//OS</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body data-theme="ember">
+
+<div class="scanlines"></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="icon-btn" id="winterToggle" title="Winter Mode">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>
+      <span>WINTER</span>
+    </button>
+  </div>
+  <div class="topbar-center">
+    <div class="live-clock" id="liveClock">--:--:--</div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn" id="settingsBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>SETTINGS</span>
+    </button>
+  </div>
+</header>
+
+<div class="winter-banner" id="winterBanner">
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>
+  WINTER MODE — ALL SLOTS +20MIN
+</div>
+
+<!-- MAIN GRID -->
+<main class="grid-home" id="mainGrid">
+
+  <!-- ANALOG CLOCK -->
+  <section class="widget widget-clock" id="widgetClock">
+    <div class="widget-inner">
+      <div class="widget-label">CLOCK</div>
+      <div class="analog-clock-wrap">
+        <canvas class="analog-clock" id="analogClock" width="120" height="120"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATE & WEATHER -->
+  <section class="widget widget-datetime" id="widgetDatetime">
+    <div class="widget-inner">
+      <div class="widget-label">SYS/TIME</div>
+      <div class="datetime-display">
+        <div class="date-line" id="dateDisplay">--- -- ----</div>
+        <div class="weather-row">
+          <div class="temp-display" id="tempDisplay">--°</div>
+          <div class="weather-info">
+            <div class="weather-desc" id="weatherDesc">LOADING...</div>
+            <div class="weather-feel" id="weatherFeel">Feels --°</div>
+          </div>
+          <div class="weather-icon-svg" id="weatherIconSvg"></div>
+        </div>
+        <div class="weather-extra" id="weatherExtra">
+          <span id="humidity">HUM --%</span>
+          <span class="sep">|</span>
+          <span id="windSpeed">WIND -- m/s</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRENT CLASS -->
+  <section class="widget widget-class" id="widgetClass">
+    <div class="widget-inner" id="classWidgetInner">
+      <div class="widget-label">NOW/NEXT</div>
+      <div class="class-status-badge" id="classStatusBadge">LOADING</div>
+      <div class="class-main-display">
+        <div class="class-slot-time" id="classSlotTime">--:-- — --:--</div>
+        <div class="class-name-big" id="classNameBig">---</div>
+        <div class="class-progress-bar">
+          <div class="class-progress-fill" id="classProgressFill" style="width:0%"></div>
+          <div class="class-progress-label" id="classProgressLabel"></div>
+        </div>
+      </div>
+      <div class="class-next-row" id="classNextRow">
+        <span class="next-label">NEXT</span>
+        <span class="next-name" id="classNextName">---</span>
+        <span class="next-time" id="classNextTime">--:--</span>
+      </div>
+      <div class="class-actions">
+        <button class="action-btn goodnotes-btn" id="goodnotesBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          GOODNOTES
+        </button>
+        <button class="action-btn reminder-btn" id="reminderBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          TASK
+        </button>
+        <button class="action-btn timetable-btn" id="timetableBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          TIMETABLE
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOCAB -->
+  <section class="widget widget-vocab" id="widgetVocab">
+    <div class="widget-inner">
+      <div class="widget-label">VOCAB/TODAY</div>
+      <div class="vocab-count" id="vocabCount">0 words</div>
+      <div class="vocab-preview" id="vocabPreview">
+        <div class="vocab-empty">Add today's words...</div>
+      </div>
+      <button class="widget-expand-btn" onclick="openPage('vocab')">VIEW ALL</button>
+    </div>
+  </section>
+
+  <!-- MEMO -->
+  <section class="widget widget-memo" id="widgetMemo">
+    <div class="widget-inner">
+      <div class="widget-label">QUICK NOTE</div>
+      <textarea class="memo-textarea" id="memoTextarea" placeholder="Quick note..."></textarea>
+      <div class="memo-meta" id="memoMeta">AUTO-SAVED</div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="widget widget-news" id="widgetNews">
+    <div class="widget-inner">
+      <div class="widget-label">NEWS/EN</div>
+      <div class="news-content" id="newsContent">
+        <div class="news-loading">
+          <div class="loading-bar"></div>
+          <span>Fetching today's article...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDAR / TASKS -->
+  <section class="widget widget-calendar" id="widgetCalendar">
+    <div class="widget-inner">
+      <div class="widget-label">TASKS</div>
+      <div class="calendar-preview" id="calendarPreview">
+        <div class="cal-empty">No tasks</div>
+      </div>
+      <button class="widget-expand-btn" onclick="openPage('calendar')">FULL CALENDAR</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== OVERLAY PAGES ===================== -->
+
+<!-- TIMETABLE PAGE -->
+<div class="overlay-page" id="pageTimetable">
+  <div class="overlay-header">
+    <button class="back-btn" onclick="closePage('timetable')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+      BACK
+    </button>
+    <span class="overlay-title">TIMETABLE</span>
+  </div>
+  <div class="overlay-content">
+    <div class="tt-day-tabs" id="ttDayTabs"></div>
+    <div class="timetable-grid" id="timetableGrid"></div>
+    <div class="tt-week-preview" id="ttWeekPreview"></div>
+  </div>
+</div>
+
+<!-- VOCAB PAGE -->
+<div class="overlay-page" id="pageVocab">
+  <div class="overlay-header">
+    <button class="back-btn" onclick="closePage('vocab')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+      BACK
+    </button>
+    <span class="overlay-title">VOCAB//STUDY</span>
+  </div>
+  <div class="overlay-content">
+    <div class="vocab-add-form">
+      <div class="form-row">
+        <input class="styled-input" id="vWord" placeholder="Word (English)">
+        <input class="styled-input" id="vJp" placeholder="Japanese">
+        <select class="styled-select" id="vPos">
+          <option value="">POS</option>
+          <option value="n.">n. Noun</option>
+          <option value="v.">v. Verb</option>
+          <option value="adj.">adj. Adjective</option>
+          <option value="adv.">adv. Adverb</option>
+          <option value="prep.">prep. Preposition</option>
+          <option value="conj.">conj. Conjunction</option>
+          <option value="phr.">phr. Phrase</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input class="styled-input wide" id="vMeaning" placeholder="Definition (English)">
+        <input class="styled-input wide" id="vExample" placeholder="Example sentence">
+      </div>
+      <button class="action-btn add-vocab-btn" onclick="addVocab()">+ ADD WORD</button>
+    </div>
+    <div class="vocab-date-nav" id="vocabDateNav"></div>
+    <div class="vocab-list" id="vocabList"></div>
+  </div>
+</div>
+
+<!-- CALENDAR PAGE -->
+<div class="overlay-page" id="pageCalendar">
+  <div class="overlay-header">
+    <button class="back-btn" onclick="closePage('calendar')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+      BACK
+    </button>
+    <span class="overlay-title">CALENDAR//TASKS</span>
+  </div>
+  <div class="overlay-content">
+    <div class="calendar-widget" id="fullCalendarWidget"></div>
+    <div class="task-list-full" id="taskListFull"></div>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="modal-overlay" id="modalReminder">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="reminderSubjectTitle">SUBJECT//TASKS</span>
+      <button class="modal-close" onclick="closeModal('reminder')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content">
+      <div class="reminder-form">
+        <input class="styled-input" id="taskName" placeholder="Task name">
+        <div class="form-row">
+          <input class="styled-input" type="date" id="taskDeadline">
+          <label class="toggle-label">
+            <input type="checkbox" id="taskNotify">
+            <span class="toggle-track"></span>
+            Notify
+          </label>
+        </div>
+        <button class="action-btn" onclick="addTask()">+ ADD TASK</button>
+      </div>
+      <div class="reminder-list" id="reminderList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GOODNOTES MODAL -->
+<div class="modal-overlay" id="modalGoodnotes">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">GOODNOTES//LINKS</span>
+      <button class="modal-close" onclick="closeModal('goodnotes')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content" id="goodnotesContent"></div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="modalSettings">
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <span class="modal-title">SETTINGS</span>
+      <button class="modal-close" onclick="closeModal('settings')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content">
+
+      <!-- COLOR THEME -->
+      <div class="settings-section">
+        <div class="settings-label">COLOR SCHEME</div>
+        <div class="theme-grid" id="themeGrid">
+          <button class="theme-chip" data-theme="ember" onclick="setTheme('ember')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#0a0a0a 50%,#ff6b00 50%)"></span>EMBER
+          </button>
+          <button class="theme-chip" data-theme="neon-ocean" onclick="setTheme('neon-ocean')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#060f14 50%,#00d4ff 50%)"></span>NEON OCEAN
+          </button>
+          <button class="theme-chip" data-theme="toxic" onclick="setTheme('toxic')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#080d04 50%,#a8ff3e 50%)"></span>TOXIC
+          </button> 
+          <button class="theme-chip" data-theme="clean-burn" onclick="setTheme('clean-burn')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#f0ede6 50%,#e84f00 50%)"></span>CLEAN BURN
+          </button>
+          <button class="theme-chip" data-theme="blueprint" onclick="setTheme('blueprint')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#f5f5f5 50%,#1a1a4e 50%)"></span>BLUEPRINT
+          </button>
+          <button class="theme-chip" data-theme="aurora" onclick="setTheme('aurora')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#0d0f1a 33%,#7c3aed 33%,#7c3aed 66%,#06b6d4 66%)"></span>AURORA
+          </button>
+          <button class="theme-chip" data-theme="sakura" onclick="setTheme('sakura')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#1a0a0f 33%,#e879a8 33%,#e879a8 66%,#fbbf24 66%)"></span>SAKURA
+          </button>
+          <button class="theme-chip" data-theme="synthwave" onclick="setTheme('synthwave')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#0f0721 33%,#ff2d78 33%,#ff2d78 66%,#7c3aed 66%)"></span>SYNTHWAVE
+          </button>
+          <button class="theme-chip" data-theme="forest" onclick="setTheme('forest')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#070e08 33%,#22c55e 33%,#22c55e 66%,#eab308 66%)"></span>FOREST
+          </button>
+          <button class="theme-chip" data-theme="arctic" onclick="setTheme('arctic')">
+            <span class="theme-swatch" style="background:linear-gradient(135deg,#f8fbff 33%,#0ea5e9 33%,#0ea5e9 66%,#6366f1 66%)"></span>ARCTIC
+          </button>
+        </div>
+      </div>
+
+      <!-- TEXT SIZE -->
+      <div class="settings-section">
+        <div class="settings-label">TEXT SIZE</div>
+        <div class="settings-desc">Adjust the overall text size throughout the interface</div>
+        <div class="form-row">
+          <select class="styled-select" id="textSizeSelect" onchange="setTextSize(this.value)">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+            <option value="xlarge">Extra Large</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- WIDGET SIZE/EMPHASIS -->
+      <div class="settings-section">
+        <div class="settings-label">WIDGET EMPHASIS (affects size)</div>
+        <div class="emphasis-list" id="emphasisList">
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetClass" checked> CLASS STATUS</label>
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetDatetime" checked> DATE/WEATHER</label>
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetClock" checked> ANALOG CLOCK</label>
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetNews" checked> NEWS</label>
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetVocab"> VOCAB</label>
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetMemo"> MEMO</label>
+          <label class="emphasis-item"><input type="checkbox" data-widget="widgetCalendar"> CALENDAR</label>
+        </div>
+      </div>
+
+      <!-- WIDGET ORDER -->
+      <div class="settings-section">
+        <div class="settings-label">WIDGET ORDER (drag to reorder)</div>
+        <div class="order-list" id="widgetOrderList"></div>
+      </div>
+
+      <!-- TIMETABLE IMPORT -->
+      <div class="settings-section">
+        <div class="settings-label">TIMETABLE IMPORT (CSV)</div>
+        <div class="settings-desc">Format: day (Mon–Fri), slot (1–6), subject, color (hex), goodnotes (url)</div>
+        <div class="import-row">
+          <textarea class="styled-input import-textarea" id="csvImport" placeholder="Mon,1,Math,#ff6b00,goodnotes://..."></textarea>
+          <button class="action-btn" onclick="importCSV()">IMPORT</button>
+        </div>
+        <button class="action-btn" style="margin-top:8px" onclick="exportCSV()">EXPORT CSV</button>
+      </div>
+
+      <!-- GOODNOTES LINKS (SETTINGS) -->
+      <div class="settings-section">
+        <div class="settings-label">GOODNOTES LINKS</div>
+        <div id="settingsGNLinks"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
